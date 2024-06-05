@@ -1,109 +1,325 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>Submit Data to Google Sheets</title>
-</head>
-<body>
-  <h1>Submit Data to Google Sheets</h1>
-  <form id="data-form">
-    <div>
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-    </div>
-    <div>
-      <label for="number1">Number 1:</label>
-      <input type="number" id="number1" name="number1" required>
-    </div>
-    <!-- Add similar blocks for number2 to number12 -->
-    <div>
-      <label for="number2">Number 2:</label>
-      <input type="number" id="number2" name="number2" required>
-    </div>
-    <div>
-      <label for="number3">Number 3:</label>
-      <input type="number" id="number3" name="number3" required>
-    </div>
-    <div>
-      <label for="number4">Number 4:</label>
-      <input type="number" id="number4" name="number4" required>
-    </div>
-    <div>
-      <label for="number5">Number 5:</label>
-      <input type="number" id="number5" name="number5" required>
-    </div>
-    <div>
-      <label for="number6">Number 6:</label>
-      <input type="number" id="number6" name="number6" required>
-    </div>
-    <div>
-      <label for="number7">Number 7:</label>
-      <input type="number" id="number7" name="number7" required>
-    </div>
-    <div>
-      <label for="number8">Number 8:</label>
-      <input type="number" id="number8" name="number8" required>
-    </div>
-    <div>
-      <label for="number9">Number 9:</label>
-      <input type="number" id="number9" name="number9" required>
-    </div>
-    <div>
-      <label for="number10">Number 10:</label>
-      <input type="number" id="number10" name="number10" required>
-    </div>
-    <div>
-      <label for="number11">Number 11:</label>
-      <input type="number" id="number11" name="number11" required>
-    </div>
-    <div>
-      <label for="number12">Number 12:</label>
-      <input type="number" id="number12" name="number12" required>
-    </div>
-    <button type="submit">Submit</button>
-  </form>
-
-  <script>
-    document.getElementById('data-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const formData = new FormData(this);
-      const data = {
-        name: formData.get('name'),
-        number1: formData.get('number1'),
-        number2: formData.get('number2'),
-        number3: formData.get('number3'),
-        number4: formData.get('number4'),
-        number5: formData.get('number5'),
-        number6: formData.get('number6'),
-        number7: formData.get('number7'),
-        number8: formData.get('number8'),
-        number9: formData.get('number9'),
-        number10: formData.get('number10'),
-        number11: formData.get('number11'),
-        number12: formData.get('number12')
-      };
-
-      fetch('https://script.google.com/macros/s/AKfycbyo-XD3iezi27c5po4o1UA8zEKgaqMgedPngHv4ckhYR4KvqUqGVx3MWOMzCLtpQ_Q/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if(data.result === 'success') {
-          alert('Data submitted successfully');
-          document.getElementById('data-form').reset();
-        } else {
-          alert('Error submitting data');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So`rovnoma</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
         }
-      })
-      .catch(error => {
-        console.error('Error submitting data', error);
-        alert('Error submitting data');
-      });
-    });
-  </script>
+
+        #surveyForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: start;
+            align-items: end;
+            gap: 10px;
+        }
+
+        /* .flex > div {
+            width: 48%;
+        } */
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            /* width: 100%; */
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .bg{
+            background-color: #45a049;
+        }
+        body.loading {
+            pointer-events: none;
+        }
+
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .flex {
+                width: 100%;
+                flex-direction: column;
+                justify-content: end;
+                align-items: center;
+                margin-bottom: 5px;
+            }
+
+            /* .flex > div {
+                width: 90%;
+            } */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="surveyForm">
+        <h1>Kalkulatr</h1>
+        <br>
+        <br>
+        <div>
+            <label for="role">Mijoz ismi:</label>
+            <input class="w100" type="text" id="role" name="role" required>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="laminatSoni">Laminat ob ketish:</label>
+                <input class="w100" type="number" id="laminatSoni" name="laminatSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="laminatNarxi">Narxi:</label>
+                <input class="w100" type="number" id="laminatNarxi" name="laminatNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="laminatResult">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="akrelSoni">Akrel ob ketish:</label>
+                <input type="number" id="akrelSoni" name="akrelSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="akrelNarxi">Narxi:</label>
+                <input type="number" id="akrelNarxi" name="akrelNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="akrelResult">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="akrelKesishSoni">Akrel kesish:</label>
+                <input type="number" id="akrelKesishSoni" name="akrelKesishSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="akrelKesishNarxi">Narxi:</label>
+                <input type="number" id="akrelKesishNarxi" name="akrelKesishNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="akrelKesishResult">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="xdpiSoni">XDPI:</label>
+                <input type="number" id="xdpiSoni" name="xdpiSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="xdpiNarxi">Narxi:</label>
+                <input type="number" id="xdpiNarxi" name="xdpiNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="xdpiResult">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="dsp6Soni">DSP6:</label>
+                <input type="number" id="dsp6Soni" name="dsp6Soni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="dsp6Narxi">Narxi:</label>
+                <input type="number" id="dsp6Narxi" name="dsp6Narxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="dsp6Result">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="dsp5Soni">DSP5:</label>
+                <input type="number" id="dsp5Soni" name="dsp5Soni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="dsp5Narxi">Narxi:</label>
+                <input type="number" id="dsp5Narxi" name="dsp5Narxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="dsp5Result">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="dvpSoni">DVP:</label>
+                <input type="number" id="dvpSoni" name="dvpSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="dvpNarxi">Narxi:</label>
+                <input type="number" id="dvpNarxi" name="dvpNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="dvpResult">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="oqDvpSoni">Oq DVP:</label>
+                <input type="number" id="oqDvpSoni" name="oqDvpSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="oqDvpNarxi">Narxi:</label>
+                <input type="number" id="oqDvpNarxi" name="oqDvpNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="oqDvpResult">0 sum</span>
+        </div>
+        <div class="flex">
+            <div>
+                <label for="doskaSoni">Doska:</label>
+                <input type="number" id="doskaSoni" name="doskaSoni" placeholder="Soni"
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <div>
+                <label for="doskaNarxi">Narxi:</label>
+                <input type="number" id="doskaNarxi" name="doskaNarxi" placeholder="Narxi" required
+                    oninput="calculateAndDisplayResult(this)">
+            </div>
+            <span id="doskaResult">0 sum</span>
+        </div>
+        <input type="submit" value="Yuborish" onclick="event.preventDefault(); calculateAndDisplayResult();">
+        <div id="resultTable"></div>
+    </form>
+
+    <script>
+        function calculateAndDisplayResult() {
+            const items = [
+                { soni: 'laminatSoni', narxi: 'laminatNarxi', result: 'laminatResult' },
+                { soni: 'akrelSoni', narxi: 'akrelNarxi', result: 'akrelResult' },
+                { soni: 'akrelKesishSoni', narxi: 'akrelKesishNarxi', result: 'akrelKesishResult' },
+                { soni: 'xdpiSoni', narxi: 'xdpiNarxi', result: 'xdpiResult' },
+                { soni: 'dsp6Soni', narxi: 'dsp6Narxi', result: 'dsp6Result' },
+                { soni: 'dsp5Soni', narxi: 'dsp5Narxi', result: 'dsp5Result' },
+                { soni: 'dvpSoni', narxi: 'dvpNarxi', result: 'dvpResult' },
+                { soni: 'oqDvpSoni', narxi: 'oqDvpNarxi', result: 'oqDvpResult' },
+                { soni: 'doskaSoni', narxi: 'doskaNarxi', result: 'doskaResult' },
+            ];
+
+            let total = 0;
+            let results = [];
+
+            items.forEach(item => {
+                const soniValue = document.getElementById(item.soni).value;
+                const narxiValue = document.getElementById(item.narxi).value;
+
+                if (soniValue && narxiValue) {
+                    const resultValue = soniValue * narxiValue;
+                    document.getElementById(item.result).innerText = resultValue;
+                    total += resultValue;
+                    results.push({ name: item.soni,soni: soniValue, narxi:narxiValue, result: resultValue });
+                } else {
+                    document.getElementById(item.result).innerText = 0;
+                }
+            });
+
+            // Display the result table
+            let resultTableHtml = '<table><thead><tr><th>Nomi</th><th>Mahsulot hajmi</th><th>Hisobi</th></tr></thead><tbody>';
+
+            results.forEach(result => {
+                resultTableHtml += `<tr><td>${result.name}</td><td>${result.soni} x ${result.narxi}</td><td>${result.result} SUM</td></tr>`;
+            });
+
+            resultTableHtml += `<tr><th>Jammi summa</th><th>${total} SUM</th></tr></tbody></table>`;
+            document.getElementById('resultTable').innerHTML = resultTableHtml;
+        }
+    </script>
 </body>
+
 </html>
